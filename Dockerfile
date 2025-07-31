@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-FROM golang:1.21-alpine as builder
+FROM golang:1.24.5-alpine as builder
 RUN apk update && \
     apk upgrade && \
     apk --no-cache add git
@@ -17,7 +17,9 @@ RUN \
     -o rdap-proxy *.go
 
 FROM scratch
-COPY --from=builder /build/rdap-proxy /app/
+WORKDIR /app
+COPY --from=builder /build/rdap-proxy .
+COPY rdap-proxy-default.yaml .
 WORKDIR /app
 ENV PORT 4000
 ENTRYPOINT ["./rdap-proxy"]
