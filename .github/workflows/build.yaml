@@ -17,6 +17,12 @@ jobs:
       
     steps:
     - uses: actions/checkout@v4
+    - name: Prep build args
+      id: prep
+      shell: bash
+      run: |
+        echo "short_sha=${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
+        echo "lastmod=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "$GITHUB_OUTPUT"
 
     - name: Buildah Action
       id: build-image
@@ -27,8 +33,8 @@ jobs:
         containerfiles: |
           ./Dockerfile
         build-args: |
-          COMMIT=${GITHUB_SHA:0:7}
-          LASTMOD=$(date -u +%Y-%m-%dT%H:%M:%SZ) 
+          COMMIT=${{ steps.prep.outputs.short_sha }}
+          LASTMOD=${{ steps.prep.outputs.lastmod }}
 
     - name: Push Image
       id: push-image

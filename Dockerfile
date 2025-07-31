@@ -23,3 +23,6 @@ COPY rdap-proxy-default.yaml .
 WORKDIR /app
 ENV PORT 4000
 ENTRYPOINT ["./rdap-proxy"]
+
+LABEL org.opencontainers.image.revision=$COMMIT \
+      org.opencontainers.image.created=$LASTMOD
